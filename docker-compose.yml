@@ -1,0 +1,55 @@
+version: '3'
+services:
+  voting-app:
+    image: voting-app-image
+    container_name: voting-app
+    depends_on:
+      - redis
+    networks:
+      - front-tier
+      - back-tier
+    ports:
+      - "6001:80"
+
+
+  result-app:
+    image: result-voting-app-image
+    container_name: result-voting-app
+    depends_on:
+      - db
+    networks:
+      - back-tier
+      - front-tier
+    ports:
+      - "6002:80"
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - back-tier
+
+  db:
+    image: postgres:9.4
+    container_name: db
+    networks:
+      - back-tier
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  worker:
+    image: worker-image
+    container_name: worker
+    depends_on:
+      - redis
+      - db
+    networks:
+      - back-tier
+
+
+networks:
+  front-tier:
+    driver: bridge
+  back-tier:
+    driver: bridge
