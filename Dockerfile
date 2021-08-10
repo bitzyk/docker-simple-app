@@ -3,6 +3,8 @@ FROM ubuntu
 ENV DEBCONF_NONINTERACTIVE_SEEN true
 RUN export DEBIAN_FRONTEND=noninteractive
 
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN apt-get update
 
 RUN apt-get -y install systemctl
